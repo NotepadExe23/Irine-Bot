@@ -1,4 +1,4 @@
-#version 2.5 (12/14/21)
+#version 3.3 (01/06/22)
 #migrated to nextcord
 import logging
 
@@ -24,6 +24,7 @@ config = default.get_config()
 
 initial_extensions = ['commands.member',
                     'commands.admin',
+                    'extra.event',
                     'utils.db']
 
 intents = nextcord.Intents.default()
@@ -35,21 +36,9 @@ bot = commands.Bot(command_prefix=config['SETTINGS']['prefix'],
 bot.remove_command('help')
 
 
-@bot.event
-async def on_ready():
-    log.info(f'Logged in as: {bot.user.name} - {bot.user.id} | Version: {nextcord.__version__}\n')
-
-
 if __name__ == '__main__':
     for extension in initial_extensions:
         bot.load_extension(extension)
-
-    for filename in os.listdir('./commands'):
-        if filename.endswith('.py'):
-            try:
-                log.info(f'{filename[:-3]} successfully loaded.')
-            except Exception as ex:
-                log.info(f'Could not load {filename[:-3]}. Reason: {ex}')
 
     if config.getboolean('TOKEN', 'is-developing'):
         log.info("Running with Development token")
